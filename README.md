@@ -1,63 +1,154 @@
-<<<<<<< HEAD
-# PersonRegistrationUi
+# Person Registration - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+Frontend desenvolvido em Angular para consumo da API de cadastro de pessoas.
 
-## Development server
+A aplicação permite realizar o cadastro de uma pessoa através de uma interface simples e intuitiva, consumindo o backend desenvolvido em Spring Boot.
 
-To start a local development server, run:
+## Tecnologias utilizadas
+
+* Angular
+* TypeScript
+* HTML
+* CSS
+* RxJS
+
+## Funcionalidades
+
+* Cadastro de pessoa
+* Integração com API REST
+* Exibição de mensagens de sucesso
+* Exibição de mensagens de erro
+* Exibição do login gerado
+* Limpeza automática do formulário após cadastro
+* Feedback visual durante processamento
+
+## Como executar o projeto
+
+### Clonar o repositório
+
+```bash
+git clone https://github.com/BrunaTaura/person-registration-api-frontend.git
+```
+
+### Entrar na pasta
+
+```bash
+cd person-registration-api-frontend
+```
+
+### Instalar dependências
+
+```bash
+npm install
+```
+
+### Executar
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+ou
 
 ```bash
-ng generate component component-name
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+A aplicação ficará disponível em:
 
-```bash
-ng generate --help
+```text
+http://localhost:4200
 ```
 
-## Building
+## Configuração da API
 
-To build the project run:
+O frontend está configurado para consumir o backend local:
 
-```bash
-ng build
+```text
+http://localhost:8080/api/people
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Caso necessário, a URL pode ser alterada em:
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```text
+src/app/services/person.service.ts
 ```
 
-## Running end-to-end tests
+## Fluxo da aplicação
 
-For end-to-end (e2e) testing, run:
+1. Usuário preenche o formulário
+2. Frontend realiza validações básicas
+3. Requisição é enviada para API
+4. Backend processa o cadastro
+5. Backend consulta o ViaCEP
+6. Backend gera um login único
+7. Backend salva o cadastro
+8. Frontend exibe o login gerado
+9. Formulário é limpo automaticamente
 
-```bash
-ng e2e
+## Exemplo de utilização
+
+Dados informados:
+
+```json
+{
+  "name": "Maria Silva",
+  "cpf": "12345678909",
+  "email": "maria@email.com",
+  "birthDate": "1990-01-01",
+  "zipCode": "01001000",
+  "complement": "Apartamento 12"
+}
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Resposta:
 
-## Additional Resources
+```json
+{
+  "id": 1,
+  "name": "Maria Silva",
+  "email": "maria@email.com",
+  "login": "mariasi"
+}
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-=======
-# person-registration-api-frontend
->>>>>>> 4da2dc6a4e390372f7e7246da5e1e7c6865b338b
+Exibição na tela:
+
+```text
+Cadastro realizado com sucesso.
+Login gerado: mariasi
+```
+
+## Estrutura do projeto
+
+models
+
+* Interfaces e modelos de dados
+
+services
+
+* Comunicação com API
+
+app.ts
+
+* Lógica principal da aplicação
+
+app.html
+
+* Estrutura visual
+
+app.css
+
+* Estilização
+
+## Melhorias futuras
+
+* Máscara para CPF e CEP
+* Testes unitários
+* Responsividade mobile
+* Tela de consulta de cadastros
+* Deploy em nuvem
+
+## Autor
+
+Bruna Taura Gandolfi
