@@ -1,46 +1,28 @@
 <div class="page">
-
   <div class="card">
+    <h1>Cadastro de Pessoa</h1>
 
-    <h1>Person Registration</h1>
-
-  <!-- <div class="success-message">
-
-      {{ successMessage }}
-    
-    </div>
-    
-    <div class="error-message">
-    
-      {{ errorMessage }}
-    
-    </div>--> 
-    <div class="success-message" *ngIf="generatedLogin">
-
-      <strong>Registration completed successfully</strong>
-
-      <p>
-        Generated Login:
+    <div class="success-message" *ngIf="successMessage">
+      <strong>Cadastro realizado com sucesso</strong>
+      <p>{{ successMessage }}</p>
+      <p *ngIf="generatedLogin">
+        Login gerado:
         <strong>{{ generatedLogin }}</strong>
       </p>
-
     </div>
 
     <div class="error-message" *ngIf="errorMessage">
-
-      <strong>Registration failed</strong>
-
+      <strong>Falha no cadastro</strong>
       <p>{{ errorMessage }}</p>
-
     </div>
 
     <div class="form-group">
-      <label for="name">Name</label>
+      <label for="name">Nome completo</label>
       <input
         id="name"
         type="text"
         [(ngModel)]="name"
-        placeholder="Enter full name">
+        placeholder="Digite o nome completo">
     </div>
 
     <div class="form-group">
@@ -49,7 +31,8 @@
         id="cpf"
         type="text"
         [(ngModel)]="cpf"
-        placeholder="Only numbers">
+        maxlength="14"
+        placeholder="Digite somente números">
     </div>
 
     <div class="form-group">
@@ -58,11 +41,11 @@
         id="email"
         type="email"
         [(ngModel)]="email"
-        placeholder="example@email.com">
+        placeholder="exemplo@email.com">
     </div>
 
     <div class="form-group">
-      <label for="birthDate">Birth Date</label>
+      <label for="birthDate">Data de nascimento</label>
       <input
         id="birthDate"
         type="date"
@@ -70,29 +53,29 @@
     </div>
 
     <div class="form-group">
-      <label for="zipCode">Zip Code</label>
+      <label for="zipCode">CEP</label>
       <input
         id="zipCode"
         type="text"
         [(ngModel)]="zipCode"
-        placeholder="Only numbers">
+        maxlength="9"
+        placeholder="Digite somente números">
     </div>
 
     <div class="form-group">
-      <label for="complement">Complement</label>
+      <label for="complement">Complemento</label>
       <input
         id="complement"
         type="text"
         [(ngModel)]="complement"
-        placeholder="Apartment, house number, etc.">
+        placeholder="Apartamento, número da casa, bloco etc.">
     </div>
 
     <button
       type="button"
-      (click)="register()">
-      Register Person
+      (click)="register()"
+      [disabled]="isLoading">
+      {{ isLoading ? 'Cadastrando...' : 'Cadastrar Pessoa' }}
     </button>
-
   </div>
-
 </div>

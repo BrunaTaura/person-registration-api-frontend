@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -14,8 +14,8 @@ import { PersonResponse } from './models/person-response';
   styleUrl: './app.css'
 })
 export class App {
-
   private personService = inject(PersonService);
+  private changeDetectorRef = inject(ChangeDetectorRef);
 
   name = '';
   cpf = '';
@@ -27,107 +27,118 @@ export class App {
   generatedLogin = '';
   errorMessage = '';
   successMessage = '';
+  isLoading = false;
 
   register(): void {
-
     this.generatedLogin = '';
     this.errorMessage = '';
     this.successMessage = '';
-    // Name validation
+
+    const cpfOnlyNumbers = this.cpf.replace(/\D/g, '');
+    const zipCodeOnlyNumbers = this.zipCode.replace(/\D/g, '');
+
     if (!this.name.trim()) {
-      this.errorMessage = 'Name is required';
+      this.errorMessage = 'Nome é obrigatório';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
-    // CPF validation
-    if (!this.cpf.trim()) {
-      this.errorMessage = 'CPF is required';
+    if (!cpfOnlyNumbers) {
+      this.errorMessage = 'CPF é obrigatório';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
-    if (!/^\d{11}$/.test(this.cpf)) {
-      this.errorMessage = 'CPF must contain exactly 11 digits';
+    if (!/^\d{11}$/.test(cpfOnlyNumbers)) {
+      this.errorMessage = 'CPF deve conter exatamente 11 números';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
-    // Email validation
     if (!this.email.trim()) {
-      this.errorMessage = 'Email is required';
+      this.errorMessage = 'Email é obrigatório';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(this.email)) {
-      this.errorMessage = 'Invalid email';
+      this.errorMessage = 'Email inválido';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
-    // Birth date validation
     if (!this.birthDate) {
-      this.errorMessage = 'Birth date is required';
+      this.errorMessage = 'Data de nascimento é obrigatória';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
-    const birthDate = new Date(this.birthDate);
+    const birthDateValue = new Date(this.birthDate);
     const today = new Date();
 
-    if (birthDate > today) {
-      this.errorMessage = 'Birth date cannot be in the future';
+    if (birthDateValue > today) {
+      this.errorMessage = 'Data de nascimento não pode ser no futuro';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
-    // Zip code validation
-    if (!this.zipCode.trim()) {
-      this.errorMessage = 'Zip code is required';
+    if (!zipCodeOnlyNumbers) {
+      this.errorMessage = 'CEP é obrigatório';
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    if (!/^\d{8}$/.test(zipCodeOnlyNumbers)) {
+      this.errorMessage = 'CEP deve conter exatamente 8 números';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
     const request: CreatePersonRequest = {
-      name: this.name,
-      cpf: this.cpf,
-      email: this.email,
+      name: this.name.trim(),
+      cpf: cpfOnlyNumbers,
+      email: this.email.trim(),
       birthDate: this.birthDate,
-      zipCode: this.zipCode,
-      complement: this.complement
+      zipCode: zipCodeOnlyNumbers,
+      complement: this.complement.trim()
     };
 
-    this.personService.create(request)
-      .subscribe({
+    this.isLoading = true;
+    this.changeDetectorRef.detectChanges();
 
-        next: (response: PersonResponse) => {
+    this.personService.create(request).subscribe({
+      next: (response: PersonResponse) => {
+        this.generatedLogin = response.login;
+        this.successMessage = `Cadastro realizado com sucesso. Login gerado: ${response.login}`;
+        this.errorMessage = '';
 
-          console.log('Sucess response', response);
-          alert('success');
+        this.clearForm();
 
-          this.generatedLogin = response.login;
-          this.errorMessage = '';
-          this.successMessage = `Registration completed successfully. Generated login: ${response.login}`;
-          // Clear form after success
-          this.name = '';
-          this.cpf = '';
-          this.email = '';
-          this.birthDate = '';
-          this.zipCode = '';
-          this.complement = '';
+        this.isLoading = false;
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error) => {
+        this.generatedLogin = '';
+        this.successMessage = '';
+        this.errorMessage =
+          error.error?.message ||
+          error.error ||
+          'Erro inesperado ao cadastrar pessoa';
 
-        },
-
-        error: (error) => {
-
-          console.log('Backend error:', error);
-
-          this.generatedLogin = '';
-
-          this.errorMessage =
-            error.error?.message ||
-            error.error ||
-            'Unexpected error occurred';
-
-        }
-
-      });
-
+        this.isLoading = false;
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
+  private clearForm(): void {
+    this.name = '';
+    this.cpf = '';
+    this.email = '';
+    this.birthDate = '';
+    this.zipCode = '';
+    this.complement = '';
+  }
 }
