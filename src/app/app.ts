@@ -111,7 +111,7 @@ export class App {
     this.personService.create(request).subscribe({
       next: (response: PersonResponse) => {
         this.generatedLogin = response.login;
-        this.successMessage = `Cadastro realizado com sucesso. Login gerado: ${response.login}`;
+        this.successMessage = `${response.login}`;
         this.errorMessage = '';
 
         this.clearForm();
